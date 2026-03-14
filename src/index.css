@@ -102,3 +102,21 @@ main {
 .movie-detail p {
   margin-bottom: 0.75rem;
 }
+
+.movie-detail button,
+.movie-card button {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.movie-detail button {
+  margin-bottom: 1rem;
+}
+
+.favorites-page h2 {
+  margin-bottom: 1.5rem;
+}

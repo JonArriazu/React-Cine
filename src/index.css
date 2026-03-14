@@ -1,3 +1,14 @@
+:root {
+  --background: #0b0b0b;
+  --surface: #141414;
+  --surface-soft: #1b1b1b;
+  --primary: #a855f7;
+  --primary-glow: #c084fc;
+  --text-main: #f5f5f5;
+  --text-muted: #a1a1aa;
+  --border: #27272a;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,9 +16,15 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-  color: #222;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background: var(--background);
+  color: var(--text-main);
 }
 
 a {
@@ -17,30 +34,194 @@ a {
 
 button {
   font: inherit;
-}
-
-header,
-footer {
-  background-color: #222;
+  background: var(--primary);
   color: white;
-  padding: 1rem;
+  border: none;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
-header nav {
-  margin-top: 0.5rem;
+button:hover {
+  background: var(--primary-glow);
 }
 
-header nav a {
-  margin-right: 1rem;
+/* HEADER */
+
+.site-header {
+  background: rgba(10, 10, 10, 0.92);
+  border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(14px);
 }
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.brand-logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed, #c084fc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.35);
+  flex-shrink: 0;
+}
+
+.brand-logo span {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.brand-text h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  margin: 0;
+  color: white;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.main-nav a {
+  color: #d4b7ff;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.14);
+  padding: 0.62rem 1rem;
+  border-radius: 999px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  transition: all 0.22s ease;
+}
+
+.main-nav a:hover {
+  color: white;
+  background: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.22);
+  transform: translateY(-1px);
+}
+
+.main-nav a.active {
+  color: white;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.32);
+}
+
+/* CONTENIDO GENERAL */
 
 main {
-  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
 }
 
-.home-page h2 {
-  margin-bottom: 1.5rem;
+/* BLOQUE ARTÍSTICO HOME */
+
+.hero-zinema {
+  max-width: 720px;
+  margin-bottom: 2.5rem;
+  padding-top: 0.5rem;
 }
+
+.hero-zinema h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4rem;
+  font-weight: 500;
+  line-height: 1;
+  color: #f3ecff;
+  margin-bottom: 0.4rem;
+  letter-spacing: -1px;
+}
+
+.hero-line {
+  width: 180px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a855f7, #c084fc);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.35);
+  margin-bottom: 1rem;
+}
+
+.hero-zinema p {
+  max-width: 620px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  line-height: 1.35;
+  color: #e9defc;
+}
+
+.home-page h2,
+.favorites-page h2,
+.movie-detail h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  letter-spacing: -0.3px;
+  color: white;
+}
+
+/* FILTRO TIPO NETFLIX */
+
+.category-filter {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.category-filter button {
+  background: rgba(255, 255, 255, 0.04);
+  color: #e9defc;
+  border: 1px solid rgba(168, 85, 247, 0.16);
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  font-size: 0.96rem;
+  font-weight: 600;
+  transition: all 0.22s ease;
+  box-shadow: none;
+}
+
+.category-filter button:hover {
+  background: rgba(168, 85, 247, 0.16);
+  color: white;
+  border-color: rgba(168, 85, 247, 0.32);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.18);
+  transform: translateY(-1px);
+}
+
+.category-filter button.active {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.32);
+}
+
+/* GRID DE PELÍCULAS */
 
 .movie-list {
   display: grid;
@@ -48,11 +229,21 @@ main {
   gap: 1.5rem;
 }
 
+/* TARJETA DE PELÍCULA */
+
 .movie-card {
-  background-color: white;
-  border-radius: 10px;
+  background-color: var(--surface);
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+  border-color: rgba(168, 85, 247, 0.3);
 }
 
 .movie-poster {
@@ -68,61 +259,81 @@ main {
 
 .movie-card-body h3 {
   margin-bottom: 0.75rem;
+  color: var(--text-main);
 }
 
 .movie-card-body p {
   margin-bottom: 0.4rem;
+  color: var(--text-muted);
 }
 
 .movie-card a {
   display: block;
 }
 
+/* DETALLE DE PELÍCULA */
+
 .movie-detail {
   max-width: 800px;
   margin: 0 auto;
-  background-color: white;
+  background-color: var(--surface);
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.movie-detail h2 {
-  margin-bottom: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border);
 }
 
 .movie-detail-poster {
   width: 300px;
+  max-width: 100%;
   height: 450px;
   object-fit: cover;
   display: block;
   margin-bottom: 1.5rem;
+  border-radius: 10px;
 }
 
 .movie-detail p {
   margin-bottom: 0.75rem;
+  color: var(--text-muted);
 }
 
-.movie-detail button,
-.movie-card button {
-  padding: 0.6rem 1rem;
-  border: none;
-  border-radius: 6px;
-  background-color: #222;
-  color: white;
-  cursor: pointer;
+.movie-detail strong {
+  color: var(--text-main);
 }
 
 .movie-detail button {
   margin-bottom: 1rem;
 }
 
+.rating-section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.rating-section h3 {
+  margin-bottom: 0.75rem;
+}
+
+/* FAVORITOS */
+
 .favorites-page h2 {
   margin-bottom: 1.5rem;
 }
+
+/* FORMULARIOS */
+
 form {
   margin-top: 2rem;
   margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
 form h3 {
@@ -135,7 +346,13 @@ textarea {
   margin-bottom: 1rem;
   font: inherit;
   resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #0f0f0f;
+  color: white;
 }
+
+/* LISTA DE COMENTARIOS */
 
 ul {
   padding-left: 1.5rem;
@@ -143,4 +360,44 @@ ul {
 
 li {
   margin-bottom: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* FOOTER */
+
+footer {
+  background-color: #0f0f0f;
+  color: var(--text-muted);
+  padding: 1.2rem 2rem;
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .main-nav {
+    gap: 0.7rem;
+  }
+
+  .brand-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero-zinema h1 {
+    font-size: 3rem;
+  }
+
+  .hero-zinema p {
+    font-size: 1.1rem;
+  }
+
+  main {
+    padding: 2rem 1rem;
+  }
 }

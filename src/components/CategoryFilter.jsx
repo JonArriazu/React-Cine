@@ -1,22 +1,25 @@
 function CategoryFilter({ categories, selectedCategory, onCategoryChange }) {
   return (
-    <section>
-      <label htmlFor="category">Filtrar por categoría: </label>
-
-      <select
-        id="category"
-        value={selectedCategory}
-        onChange={(event) => onCategoryChange(event.target.value)}
+    <div className="category-filter">
+      <button
+        type="button"
+        className={selectedCategory === 'Todas' ? 'active' : ''}
+        onClick={() => onCategoryChange('Todas')}
       >
-        <option value="Todas">Todas</option>
+        Todas
+      </button>
 
-        {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-    </section>
+      {categories.map((category) => (
+        <button
+          key={category}
+          type="button"
+          className={selectedCategory === category ? 'active' : ''}
+          onClick={() => onCategoryChange(category)}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
   )
 }
 

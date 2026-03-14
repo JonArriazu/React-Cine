@@ -1,10 +1,17 @@
 function MovieCard({ movie }) {
   return (
-    <article>
-      <img src={movie.image} alt={movie.title} width="200" />
-      <h3>{movie.title}</h3>
-      <p>Categoría: {movie.category}</p>
-      <p>Año: {movie.year}</p>
+    <article className="movie-card">
+      <img
+        src={movie.image}
+        alt={movie.title}
+        className="movie-poster"
+      />
+
+      <div className="movie-card-body">
+        <h3>{movie.title}</h3>
+        <p><strong>Categoría:</strong> {movie.category}</p>
+        <p><strong>Año:</strong> {movie.year}</p>
+      </div>
     </article>
   )
 }

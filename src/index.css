@@ -18,3 +18,58 @@ a {
 button {
   font: inherit;
 }
+
+header,
+footer {
+  background-color: #222;
+  color: white;
+  padding: 1rem;
+}
+
+header nav {
+  margin-top: 0.5rem;
+}
+
+header nav a {
+  margin-right: 1rem;
+}
+
+main {
+  padding: 2rem;
+}
+
+.home-page h2 {
+  margin-bottom: 1.5rem;
+}
+
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.movie-card {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.movie-poster {
+  width: 100%;
+  height: 330px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-card-body {
+  padding: 1rem;
+}
+
+.movie-card-body h3 {
+  margin-bottom: 0.75rem;
+}
+
+.movie-card-body p {
+  margin-bottom: 0.4rem;
+}

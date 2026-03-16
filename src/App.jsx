@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router'
 import Layout from './components/Layout'
+import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import MovieDetail from './pages/MovieDetail'
 import Favorites from './pages/Favorites'
@@ -13,7 +14,14 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="movie/:id" element={<MovieDetail />} />
-        <Route path="favorites" element={<Favorites />} />
+        <Route
+          path="favorites"
+          element={
+            <ProtectedRoute>
+              <Favorites />
+            </ProtectedRoute>
+          }
+        />
         <Route path="contact" element={<Contact />} />
         <Route path="legal" element={<Legal />} />
         <Route path="login" element={<Login />} />

@@ -1,5 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  where,
+} from 'firebase/firestore'
+import { db } from '../firebase/firebase'
 import { movies } from '../data/movies'
 import { useAuth } from '../context/AuthContext'
 import CommentForm from '../components/CommentForm'
@@ -16,46 +28,80 @@ function MovieDetail() {
   const [isFavorite, setIsFavorite] = useState(false)
   const [comments, setComments] = useState([])
 
-  useEffect(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || []
-    setIsFavorite(savedFavorites.includes(movieId))
-
-    const savedComments = JSON.parse(localStorage.getItem('comments')) || {}
-    setComments(savedComments[movieId] || [])
-  }, [movieId])
-
-  const handleFavoriteToggle = () => {
-    if (!user) return
-
-    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || []
-
-    let updatedFavorites
-
-    if (savedFavorites.includes(movieId)) {
-      updatedFavorites = savedFavorites.filter((favoriteId) => favoriteId !== movieId)
+  const loadFavoriteState = async () => {
+    if (!user) {
       setIsFavorite(false)
-    } else {
-      updatedFavorites = [...savedFavorites, movieId]
-      setIsFavorite(true)
+      return
     }
 
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites))
+    const favoritesRef = doc(db, 'favorites', user.uid)
+    const favoritesSnap = await getDoc(favoritesRef)
+
+    const ids = favoritesSnap.exists() ? favoritesSnap.data().movieIds || [] : []
+    setIsFavorite(ids.includes(movieId))
   }
 
-  const handleAddComment = (newComment) => {
+  const loadComments = async () => {
+    const commentsQuery = query(
+      collection(db, 'comments'),
+      where('movieId', '==', movieId)
+    )
+
+    const commentsSnapshot = await getDocs(commentsQuery)
+
+    const commentsData = commentsSnapshot.docs
+      .map((commentDoc) => ({
+        id: commentDoc.id,
+        ...commentDoc.data(),
+      }))
+      .sort((a, b) => {
+        const aTime = a.createdAt?.seconds ?? 0
+        const bTime = b.createdAt?.seconds ?? 0
+        return bTime - aTime
+      })
+
+    setComments(commentsData)
+  }
+
+  useEffect(() => {
+    loadFavoriteState()
+  }, [user, movieId])
+
+  useEffect(() => {
+    loadComments()
+  }, [movieId])
+
+  const handleFavoriteToggle = async () => {
     if (!user) return
 
-    const savedComments = JSON.parse(localStorage.getItem('comments')) || {}
+    const favoritesRef = doc(db, 'favorites', user.uid)
+    const favoritesSnap = await getDoc(favoritesRef)
 
-    const updatedMovieComments = [...(savedComments[movieId] || []), newComment]
+    const ids = favoritesSnap.exists() ? favoritesSnap.data().movieIds || [] : []
 
-    const updatedComments = {
-      ...savedComments,
-      [movieId]: updatedMovieComments,
-    }
+    const updatedIds = ids.includes(movieId)
+      ? ids.filter((id) => id !== movieId)
+      : [...ids, movieId]
 
-    localStorage.setItem('comments', JSON.stringify(updatedComments))
-    setComments(updatedMovieComments)
+    await setDoc(favoritesRef, {
+      movieIds: updatedIds,
+    })
+
+    setIsFavorite(updatedIds.includes(movieId))
+  }
+
+  const handleAddComment = async (newComment) => {
+    if (!user) return
+
+    await addDoc(collection(db, 'comments'), {
+      movieId,
+      userId: user.uid,
+      userEmail: user.email,
+      text: newComment,
+      createdAt: serverTimestamp(),
+    })
+
+    await loadComments()
   }
 
   if (!movie) {
@@ -86,11 +132,7 @@ function MovieDetail() {
       <p><strong>Duración:</strong> {movie.duration} minutos</p>
       <p><strong>Descripción:</strong> {movie.description}</p>
 
-      {user ? (
-        <Rating movieId={movieId} />
-      ) : (
-        <p>Inicia sesión para puntuar esta película.</p>
-      )}
+      <Rating movieId={movieId} />
 
       {user ? (
         <CommentForm onAddComment={handleAddComment} />

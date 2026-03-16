@@ -1,24 +1,46 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { db } from '../firebase/firebase'
+import { useAuth } from '../context/AuthContext'
 import { movies } from '../data/movies'
 
 function Favorites() {
+  const { user } = useAuth()
+  const [favoriteIds, setFavoriteIds] = useState([])
   const [favoriteMovies, setFavoriteMovies] = useState([])
 
+  const loadFavorites = async () => {
+    if (!user) {
+      setFavoriteIds([])
+      setFavoriteMovies([])
+      return
+    }
+
+    const favoritesRef = doc(db, 'favorites', user.uid)
+    const favoritesSnap = await getDoc(favoritesRef)
+
+    const ids = favoritesSnap.exists() ? favoritesSnap.data().movieIds || [] : []
+
+    setFavoriteIds(ids)
+    setFavoriteMovies(movies.filter((movie) => ids.includes(movie.id)))
+  }
+
   useEffect(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || []
-    const filteredMovies = movies.filter((movie) => savedFavorites.includes(movie.id))
-    setFavoriteMovies(filteredMovies)
-  }, [])
+    loadFavorites()
+  }, [user])
 
-  const handleRemoveFavorite = (movieId) => {
-    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || []
-    const updatedFavorites = savedFavorites.filter((favoriteId) => favoriteId !== movieId)
+  const handleRemoveFavorite = async (movieId) => {
+    if (!user) return
 
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites))
-    setFavoriteMovies((prevMovies) =>
-      prevMovies.filter((movie) => movie.id !== movieId)
-    )
+    const updatedIds = favoriteIds.filter((id) => id !== movieId)
+
+    await setDoc(doc(db, 'favorites', user.uid), {
+      movieIds: updatedIds,
+    })
+
+    setFavoriteIds(updatedIds)
+    setFavoriteMovies(movies.filter((movie) => updatedIds.includes(movie.id)))
   }
 
   return (

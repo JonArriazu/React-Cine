@@ -9,21 +9,36 @@ function Favorites() {
   const { user } = useAuth()
   const [favoriteIds, setFavoriteIds] = useState([])
   const [favoriteMovies, setFavoriteMovies] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const loadFavorites = async () => {
-    if (!user) {
+    setLoading(true)
+    setError('')
+
+    try {
+      if (!user) {
+        setFavoriteIds([])
+        setFavoriteMovies([])
+        return
+      }
+
+      const favoritesRef = doc(db, 'favorites', user.uid)
+      const favoritesSnap = await getDoc(favoritesRef)
+
+      const ids = favoritesSnap.exists()
+        ? favoritesSnap.data().movieIds || []
+        : []
+
+      setFavoriteIds(ids)
+      setFavoriteMovies(movies.filter((movie) => ids.includes(movie.id)))
+    } catch (error) {
+      setError('No se pudieron cargar tus favoritos.')
       setFavoriteIds([])
       setFavoriteMovies([])
-      return
+    } finally {
+      setLoading(false)
     }
-
-    const favoritesRef = doc(db, 'favorites', user.uid)
-    const favoritesSnap = await getDoc(favoritesRef)
-
-    const ids = favoritesSnap.exists() ? favoritesSnap.data().movieIds || [] : []
-
-    setFavoriteIds(ids)
-    setFavoriteMovies(movies.filter((movie) => ids.includes(movie.id)))
   }
 
   useEffect(() => {
@@ -33,23 +48,56 @@ function Favorites() {
   const handleRemoveFavorite = async (movieId) => {
     if (!user) return
 
-    const updatedIds = favoriteIds.filter((id) => id !== movieId)
+    setLoading(true)
+    setError('')
 
-    await setDoc(doc(db, 'favorites', user.uid), {
-      movieIds: updatedIds,
-    })
+    try {
+      const updatedIds = favoriteIds.filter((id) => id !== movieId)
 
-    setFavoriteIds(updatedIds)
-    setFavoriteMovies(movies.filter((movie) => updatedIds.includes(movie.id)))
+      await setDoc(doc(db, 'favorites', user.uid), {
+        movieIds: updatedIds,
+      })
+
+      setFavoriteIds(updatedIds)
+      setFavoriteMovies(movies.filter((movie) => updatedIds.includes(movie.id)))
+    } catch (error) {
+      setError('No se pudo quitar la película de favoritos.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <section className="favorites-page">
       <h2>Mis favoritos</h2>
 
-      {favoriteMovies.length === 0 ? (
-        <p>No tienes películas favoritas todavía.</p>
-      ) : (
+      {loading && (
+        <p className="loading-message">Cargando favoritos...</p>
+      )}
+
+      {!loading && error && (
+        <p className="form-error">{error}</p>
+      )}
+
+      {!loading && !error && !user && (
+        <div className="empty-state">
+          <p>Inicia sesión para ver tus favoritos.</p>
+          <Link to="/" className="back-link">
+            Ir al catálogo
+          </Link>
+        </div>
+      )}
+
+      {!loading && !error && user && favoriteMovies.length === 0 && (
+        <div className="empty-state">
+          <p>Todavía no has añadido películas a favoritos.</p>
+          <Link to="/" className="back-link">
+            Ir al catálogo
+          </Link>
+        </div>
+      )}
+
+      {!loading && !error && favoriteMovies.length > 0 && (
         <div className="movie-list">
           {favoriteMovies.map((movie) => (
             <article key={movie.id} className="movie-card">
@@ -68,7 +116,10 @@ function Favorites() {
               </Link>
 
               <div className="movie-card-body">
-                <button onClick={() => handleRemoveFavorite(movie.id)}>
+                <button
+                  onClick={() => handleRemoveFavorite(movie.id)}
+                  disabled={loading}
+                >
                   Quitar de favoritos
                 </button>
               </div>

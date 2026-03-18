@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import {
   addDoc,
   collection,
@@ -27,40 +27,66 @@ function MovieDetail() {
 
   const [isFavorite, setIsFavorite] = useState(false)
   const [comments, setComments] = useState([])
+  const [commentsLoading, setCommentsLoading] = useState(false)
+  const [commentsError, setCommentsError] = useState('')
+  const [favoriteLoading, setFavoriteLoading] = useState(false)
+  const [favoriteError, setFavoriteError] = useState('')
 
   const loadFavoriteState = async () => {
     if (!user) {
       setIsFavorite(false)
+      setFavoriteError('')
       return
     }
 
-    const favoritesRef = doc(db, 'favorites', user.uid)
-    const favoritesSnap = await getDoc(favoritesRef)
+    setFavoriteLoading(true)
+    setFavoriteError('')
 
-    const ids = favoritesSnap.exists() ? favoritesSnap.data().movieIds || [] : []
-    setIsFavorite(ids.includes(movieId))
+    try {
+      const favoritesRef = doc(db, 'favorites', user.uid)
+      const favoritesSnap = await getDoc(favoritesRef)
+
+      const ids = favoritesSnap.exists()
+        ? favoritesSnap.data().movieIds || []
+        : []
+
+      setIsFavorite(ids.includes(movieId))
+    } catch (error) {
+      setFavoriteError('No se pudo comprobar el estado de favoritos.')
+    } finally {
+      setFavoriteLoading(false)
+    }
   }
 
   const loadComments = async () => {
-    const commentsQuery = query(
-      collection(db, 'comments'),
-      where('movieId', '==', movieId)
-    )
+    setCommentsLoading(true)
+    setCommentsError('')
 
-    const commentsSnapshot = await getDocs(commentsQuery)
+    try {
+      const commentsQuery = query(
+        collection(db, 'comments'),
+        where('movieId', '==', movieId)
+      )
 
-    const commentsData = commentsSnapshot.docs
-      .map((commentDoc) => ({
-        id: commentDoc.id,
-        ...commentDoc.data(),
-      }))
-      .sort((a, b) => {
-        const aTime = a.createdAt?.seconds ?? 0
-        const bTime = b.createdAt?.seconds ?? 0
-        return bTime - aTime
-      })
+      const commentsSnapshot = await getDocs(commentsQuery)
 
-    setComments(commentsData)
+      const commentsData = commentsSnapshot.docs
+        .map((commentDoc) => ({
+          id: commentDoc.id,
+          ...commentDoc.data(),
+        }))
+        .sort((a, b) => {
+          const aTime = a.createdAt?.seconds ?? 0
+          const bTime = b.createdAt?.seconds ?? 0
+          return bTime - aTime
+        })
+
+      setComments(commentsData)
+    } catch (error) {
+      setCommentsError('No se pudieron cargar los comentarios.')
+    } finally {
+      setCommentsLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -74,38 +100,63 @@ function MovieDetail() {
   const handleFavoriteToggle = async () => {
     if (!user) return
 
-    const favoritesRef = doc(db, 'favorites', user.uid)
-    const favoritesSnap = await getDoc(favoritesRef)
+    setFavoriteLoading(true)
+    setFavoriteError('')
 
-    const ids = favoritesSnap.exists() ? favoritesSnap.data().movieIds || [] : []
+    try {
+      const favoritesRef = doc(db, 'favorites', user.uid)
+      const favoritesSnap = await getDoc(favoritesRef)
 
-    const updatedIds = ids.includes(movieId)
-      ? ids.filter((id) => id !== movieId)
-      : [...ids, movieId]
+      const ids = favoritesSnap.exists()
+        ? favoritesSnap.data().movieIds || []
+        : []
 
-    await setDoc(favoritesRef, {
-      movieIds: updatedIds,
-    })
+      const updatedIds = ids.includes(movieId)
+        ? ids.filter((id) => id !== movieId)
+        : [...ids, movieId]
 
-    setIsFavorite(updatedIds.includes(movieId))
+      await setDoc(favoritesRef, {
+        movieIds: updatedIds,
+      })
+
+      setIsFavorite(updatedIds.includes(movieId))
+    } catch (error) {
+      setFavoriteError('No se pudo actualizar favoritos. Inténtalo de nuevo.')
+    } finally {
+      setFavoriteLoading(false)
+    }
   }
 
   const handleAddComment = async (newComment) => {
     if (!user) return
 
-    await addDoc(collection(db, 'comments'), {
-      movieId,
-      userId: user.uid,
-      userEmail: user.email,
-      text: newComment,
-      createdAt: serverTimestamp(),
-    })
+    setCommentsError('')
 
-    await loadComments()
+    try {
+      await addDoc(collection(db, 'comments'), {
+        movieId,
+        userId: user.uid,
+        userEmail: user.email,
+        text: newComment,
+        createdAt: serverTimestamp(),
+      })
+
+      await loadComments()
+    } catch (error) {
+      setCommentsError('No se pudo publicar el comentario.')
+    }
   }
 
   if (!movie) {
-    return <h2>Película no encontrada</h2>
+    return (
+      <section className="movie-detail not-found-box">
+        <h2>Película no encontrada</h2>
+        <p>La película que buscas no existe o no está disponible.</p>
+        <Link to="/" className="back-link">
+          Volver al catálogo
+        </Link>
+      </section>
+    )
   }
 
   return (
@@ -119,9 +170,17 @@ function MovieDetail() {
       />
 
       {user ? (
-        <button onClick={handleFavoriteToggle}>
-          {isFavorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
-        </button>
+        <>
+          <button onClick={handleFavoriteToggle} disabled={favoriteLoading}>
+            {favoriteLoading
+              ? 'Actualizando...'
+              : isFavorite
+              ? 'Quitar de favoritos'
+              : 'Añadir a favoritos'}
+          </button>
+
+          {favoriteError && <p className="form-error">{favoriteError}</p>}
+        </>
       ) : (
         <p>Inicia sesión para añadir esta película a favoritos.</p>
       )}
@@ -140,7 +199,17 @@ function MovieDetail() {
         <p>Inicia sesión para comentar esta película.</p>
       )}
 
-      <CommentList comments={comments} />
+      {commentsLoading && (
+        <p className="loading-message">Cargando comentarios...</p>
+      )}
+
+      {commentsError && (
+        <p className="form-error">{commentsError}</p>
+      )}
+
+      {!commentsLoading && !commentsError && (
+        <CommentList comments={comments} />
+      )}
     </section>
   )
 }

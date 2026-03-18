@@ -40,16 +40,50 @@ function Login() {
     }
   }
 
+  const validateForm = () => {
+    const cleanEmail = email.trim()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!cleanEmail) {
+      return 'Debes introducir un correo electrónico.'
+    }
+
+    if (!emailRegex.test(cleanEmail)) {
+      return 'Introduce un correo electrónico válido.'
+    }
+
+    if (!password.trim()) {
+      return 'Debes introducir una contraseña.'
+    }
+
+    if (password.trim().length < 6) {
+      return 'La contraseña debe tener al menos 6 caracteres.'
+    }
+
+    return ''
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
     setLoading(true)
 
+    const validationError = validateForm()
+
+    if (validationError) {
+      setError(validationError)
+      setLoading(false)
+      return
+    }
+
+    const cleanEmail = email.trim()
+    const cleanPassword = password.trim()
+
     try {
       if (isRegisterMode) {
-        await createUserWithEmailAndPassword(auth, email, password)
+        await createUserWithEmailAndPassword(auth, cleanEmail, cleanPassword)
       } else {
-        await signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(auth, cleanEmail, cleanPassword)
       }
 
       setEmail('')
@@ -62,18 +96,35 @@ function Login() {
     }
   }
 
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value)
+    if (error) {
+      setError('')
+    }
+  }
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+    if (error) {
+      setError('')
+    }
+  }
+
+  const isSubmitDisabled =
+    loading || !email.trim() || !password.trim()
+
   return (
     <section className="login-page">
       <h2>{isRegisterMode ? 'Registro' : 'Iniciar sesión'}</h2>
 
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit} className="auth-form" noValidate>
         <label htmlFor="email">Correo electrónico</label>
         <input
           id="email"
           type="email"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
+          onChange={handleEmailChange}
+          placeholder="ejemplo@correo.com"
         />
 
         <label htmlFor="password">Contraseña</label>
@@ -81,14 +132,13 @@ function Login() {
           id="password"
           type="password"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-          minLength="6"
+          onChange={handlePasswordChange}
+          placeholder="Mínimo 6 caracteres"
         />
 
         {error && <p className="auth-error">{error}</p>}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={isSubmitDisabled}>
           {loading
             ? 'Procesando...'
             : isRegisterMode
@@ -99,7 +149,10 @@ function Login() {
 
       <button
         type="button"
-        onClick={() => setIsRegisterMode(!isRegisterMode)}
+        onClick={() => {
+          setIsRegisterMode(!isRegisterMode)
+          setError('')
+        }}
         className="auth-switch"
       >
         {isRegisterMode

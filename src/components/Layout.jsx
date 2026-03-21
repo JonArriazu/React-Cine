@@ -2,10 +2,10 @@ import { Outlet } from 'react-router'
 import Header from './Header'
 import Footer from './Footer'
 
-function Layout() {
+function Layout({ theme, toggleTheme }) {
   return (
     <>
-      <Header />
+      <Header theme={theme} toggleTheme={toggleTheme} />
       <main>
         <Outlet />
       </main>

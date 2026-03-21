@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router'
 import { useAuth } from '../context/AuthContext'
 
-function Header() {
+function Header({ theme, toggleTheme }) {
   const { user, logout } = useAuth()
 
   return (
@@ -42,6 +42,24 @@ function Header() {
           >
             Aviso legal
           </NavLink>
+
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={
+              theme === 'dark'
+                ? 'Cambiar a modo claro'
+                : 'Cambiar a modo oscuro'
+            }
+            title={
+              theme === 'dark'
+                ? 'Cambiar a modo claro'
+                : 'Cambiar a modo oscuro'
+            }
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
 
           {!user ? (
             <NavLink

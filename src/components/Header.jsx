@@ -13,7 +13,7 @@ function Header({ theme, toggleTheme }) {
           </div>
 
           <div className="brand-text">
-            <h1>Catálogo VOD</h1>
+            <h1>Zinema Aretoa</h1>
           </div>
         </div>
 

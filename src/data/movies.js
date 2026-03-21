@@ -65,4 +65,158 @@ export const movies = [
     description:
       'Un general romano traicionado busca venganza tras convertirse en gladiador.',
   },
+  {
+    id: 7,
+    title: 'Avatar',
+    category: 'Ciencia ficción',
+    year: 2009,
+    director: 'James Cameron',
+    duration: 162,
+    image: '/images/avatar.jpg',
+    description:
+      'Un soldado se infiltra en un planeta alienígena y acaba cuestionando su misión.',
+  },
+  {
+    id: 8,
+    title: 'Forrest Gump',
+    category: 'Drama',
+    year: 1994,
+    director: 'Robert Zemeckis',
+    duration: 142,
+    image: '/images/forrest-gump.jpg',
+    description:
+      'La vida de un hombre con discapacidad intelectual que presencia eventos históricos clave.',
+  },
+  {
+    id: 9,
+    title: 'The Shawshank Redemption',
+    category: 'Drama',
+    year: 1994,
+    director: 'Frank Darabont',
+    duration: 142,
+    image: '/images/shawshank.jpg',
+    description:
+      'Un hombre es condenado injustamente y encuentra esperanza en prisión.',
+  },
+  {
+    id: 10,
+    title: 'Fight Club',
+    category: 'Drama',
+    year: 1999,
+    director: 'David Fincher',
+    duration: 139,
+    image: '/images/fight-club.jpg',
+    description:
+      'Un hombre crea un club secreto de lucha como forma de escapar de su rutina.',
+  },
+  {
+    id: 11,
+    title: 'The Lord of the Rings: The Fellowship of the Ring',
+    category: 'Fantasía',
+    year: 2001,
+    director: 'Peter Jackson',
+    duration: 178,
+    image: '/images/lotr1.jpg',
+    description:
+      'Un hobbit emprende un viaje para destruir un anillo poderoso.',
+  },
+  {
+    id: 12,
+    title: 'The Lord of the Rings: The Return of the King',
+    category: 'Fantasía',
+    year: 2003,
+    director: 'Peter Jackson',
+    duration: 201,
+    image: '/images/lotr3.jpg',
+    description:
+      'La batalla final por la Tierra Media decide el destino del anillo.',
+  },
+  {
+    id: 13,
+    title: 'Joker',
+    category: 'Drama',
+    year: 2019,
+    director: 'Todd Phillips',
+    duration: 122,
+    image: '/images/joker.jpg',
+    description:
+      'La historia de origen de uno de los villanos más icónicos.',
+  },
+  {
+    id: 14,
+    title: 'Parasite',
+    category: 'Drama',
+    year: 2019,
+    director: 'Bong Joon-ho',
+    duration: 132,
+    image: '/images/parasite.jpg',
+    description:
+      'Una familia pobre se infiltra en una rica con consecuencias inesperadas.',
+  },
+  {
+    id: 15,
+    title: 'Avengers: Endgame',
+    category: 'Acción',
+    year: 2019,
+    director: 'Anthony y Joe Russo',
+    duration: 181,
+    image: '/images/endgame.jpg',
+    description:
+      'Los Vengadores intentan revertir el daño causado por Thanos.',
+  },
+  {
+    id: 16,
+    title: 'Spider-Man: No Way Home',
+    category: 'Acción',
+    year: 2021,
+    director: 'Jon Watts',
+    duration: 148,
+    image: '/images/spiderman.jpg',
+    description:
+      'Peter Parker enfrenta consecuencias multiversales tras revelar su identidad.',
+  },
+  {
+    id: 17,
+    title: 'Whiplash',
+    category: 'Drama',
+    year: 2014,
+    director: 'Damien Chazelle',
+    duration: 107,
+    image: '/images/whiplash.jpg',
+    description:
+      'Un joven baterista lucha por alcanzar la perfección bajo un profesor exigente.',
+  },
+  {
+    id: 18,
+    title: 'La La Land',
+    category: 'Musical',
+    year: 2016,
+    director: 'Damien Chazelle',
+    duration: 128,
+    image: '/images/lalaland.jpg',
+    description:
+      'Una historia de amor entre una actriz y un músico en Los Ángeles.',
+  },
+  {
+  id: 19,
+  title: 'The Greatest Showman',
+  category: 'Musical',
+  year: 2017,
+  director: 'Michael Gracey',
+  duration: 105,
+  image: '/images/greatest-showman.jpg',
+  description:
+    'La historia de P.T. Barnum, un visionario que creó el mayor espectáculo del mundo.',
+  },
+  {
+  id: 20,
+  title: 'Bohemian Rhapsody',
+  category: 'Musical',
+  year: 2018,
+  director: 'Bryan Singer',
+  duration: 134,
+  image: '/images/bohemian-rhapsody.jpg',
+  description:
+    'La historia de Freddie Mercury y la banda Queen, desde sus inicios hasta su icónica actuación en Live Aid.',
+},
 ]

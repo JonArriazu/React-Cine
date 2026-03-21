@@ -27,7 +27,6 @@ El proyecto está organizado de la siguiente manera:
 - `src/context`: gestión de estado global, como la autenticación del usuario
 - `src/firebase`: configuración e inicialización de Firebase
 - `src/data`: datos estáticos del catálogo de películas
-- `src/assets`: recursos estáticos como imágenes o iconos
 
 Esta organización permite separar la lógica, la presentación y los datos, facilitando el mantenimiento y la escalabilidad del proyecto.
 

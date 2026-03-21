@@ -5,13 +5,20 @@ import CategoryFilter from '../components/CategoryFilter'
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState('Todas')
+  const [searchTerm, setSearchTerm] = useState('')
 
   const categories = [...new Set(movies.map((movie) => movie.category))]
 
-  const filteredMovies =
-    selectedCategory === 'Todas'
-      ? movies
-      : movies.filter((movie) => movie.category === selectedCategory)
+  const filteredMovies = movies.filter((movie) => {
+    const matchesCategory =
+      selectedCategory === 'Todas' || movie.category === selectedCategory
+
+    const matchesSearch = movie.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+
+    return matchesCategory && matchesSearch
+  })
 
   return (
     <section className="home-page">
@@ -33,9 +40,18 @@ function Home() {
         onCategoryChange={setSelectedCategory}
       />
 
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="Buscar película por título..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       {filteredMovies.length === 0 ? (
         <div className="empty-state">
-          <p>No hay películas en esta categoría.</p>
+          <p>No hay películas que coincidan con la búsqueda.</p>
         </div>
       ) : (
         <MovieList movies={filteredMovies} />
